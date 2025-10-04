@@ -1,0 +1,18 @@
+_eeprom_read_byte: CODE, 879 0 90
+_i2c_start: CODE, 413 0 25
+_putch: CODE, 340 0 12
+_eeprom_write_byte: CODE, 797 0 82
+_main: CODE, 969 0 313
+_uart_init: CODE, 352 0 16
+___lwdiv: CODE, 719 0 78
+_isdigit: CODE, 368 0 21
+_printf: CODE, 1282 0 766
+___lwmod: CODE, 651 0 68
+_i2c_stop: CODE, 389 0 24
+_i2c_wait: CODE, 333 0 3
+_i2c_read_ack: CODE, 438 0 28
+___wmul: CODE, 495 0 42
+_i2c_write_byte: CODE, 537 0 57
+_i2c_read_byte: CODE, 594 0 57
+_i2c_send_ack: CODE, 466 0 29
+Total: 1711

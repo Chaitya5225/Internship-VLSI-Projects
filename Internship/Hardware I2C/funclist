@@ -1,0 +1,15 @@
+___aldiv: CODE, 1201 0 168
+_UART_Init: CODE, 1369 0 242
+_main: CODE, 1071 0 130
+_I2C_Write: CODE, 871 0 17
+_UART_Write_Text: CODE, 951 0 42
+___lwdiv: CODE, 993 0 78
+_I2C_Stop: CODE, 818 0 9
+_I2C_Wait: CODE, 855 0 16
+_I2C_Init: CODE, 839 0 16
+_isdigit: CODE, 888 0 21
+_sprintf: CODE, 1611 0 437
+_UART_Write: CODE, 827 0 12
+___wmul: CODE, 909 0 42
+_I2C_Start: CODE, 809 0 9
+Total: 1239

@@ -1,0 +1,100 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+-- The testbench entity is empty, as it has no external inputs or outputs.
+entity pulse_generator_tb is
+end entity pulse_generator_tb;
+
+
+architecture sim of pulse_generator_tb is
+    
+    --============================================================================
+    -- 1. Component Declaration
+    --    Declare the design we want to test (our "Device Under Test" or DUT).
+    --============================================================================
+    component pulse_generator is
+        port (
+            clk       : in  std_logic;
+            rst_n     : in  std_logic;
+            async_i   : in  std_logic;
+            pulse_o   : out std_logic
+        );
+    end component;
+
+    --============================================================================
+    -- 2. Constants & Signals
+    --    Define timing constants and signals to connect to the DUT's ports.
+    --============================================================================
+    -- System clock period (20 ns for a 50 MHz clock)
+    constant CLK_PERIOD : time := 20 ns;
+    
+    -- Signals that will be connected to the DUT
+    signal clk_s     : std_logic := '0';
+    signal rst_n_s   : std_logic;
+    signal async_i_s : std_logic;
+    signal pulse_o_s : std_logic; -- This wire will show us the DUT's output
+
+begin
+
+    --============================================================================
+    -- 3. Instantiate the DUT
+    --    Create an instance of the pulse_generator and connect its ports
+    --    to our testbench signals.
+    --============================================================================
+    UUT : pulse_generator
+        port map (
+            clk       => clk_s,
+            rst_n     => rst_n_s,
+            async_i   => async_i_s,
+            pulse_o   => pulse_o_s
+        );
+
+    --============================================================================
+    -- 4. Clock Generation Process
+    --    A simple process that generates a continuous clock signal.
+    --============================================================================
+    clk_s <= not clk_s after CLK_PERIOD / 2;
+
+
+    --============================================================================
+    -- 5. Stimulus Process
+    --    This process defines the sequence of inputs to test the DUT's logic.
+    --============================================================================
+    stimulus_proc : process
+    begin
+        -- ----------------- INITIALIZATION -----------------
+        -- Start by putting the DUT into a known state by asserting reset.
+        rst_n_s   <= '0';
+        async_i_s <= '0';
+        wait for 100 ns; -- Hold reset for a few cycles
+        
+        rst_n_s <= '1'; -- Release the reset
+        wait for 50 ns;
+
+        -- ----------------- TEST CASE 1: Short Input Pulse -----------------
+        -- Generate a 2us input pulse, which is within the 1-5us range.
+        -- We expect to see a 3us output pulse.
+        report "TEST 1: Applying a 2us input pulse." severity note;
+        async_i_s <= '1';
+        wait for 2 us;
+        async_i_s <= '0';
+        
+        -- Wait for the output pulse to complete and then some.
+        wait for 5 us;
+
+        -- ----------------- TEST CASE 2: Long Input Pulse -----------------
+        -- Generate a 4.5us input pulse to ensure the circuit works again
+        -- and the output duration is not affected by a longer input.
+        report "TEST 2: Applying a 4.5us input pulse." severity note;
+        async_i_s <= '1';
+        wait for 4.5 us;
+        async_i_s <= '0';
+
+        -- Wait for the test to finish.
+        wait for 5 us;
+
+        report "Simulation finished." severity note;
+        wait; -- Halt the simulation
+    end process stimulus_proc;
+
+end architecture sim;

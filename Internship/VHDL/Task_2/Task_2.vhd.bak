@@ -1,0 +1,94 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+
+entity pulse_generator is
+    port (
+        clk       : in  std_logic; -- System clock (50 MHz / 20 ns period)
+        rst_n     : in  std_logic; -- Asynchronous active-low reset
+        async_i   : in  std_logic; -- Asynchronous input signal
+        pulse_o   : out std_logic  -- 3 microsecond output pulse
+    );
+end entity pulse_generator;
+
+
+architecture behavioral of pulse_generator is
+
+    -- Constant for the number of clock cycles needed for a 3us pulse.
+    -- This makes the code easier to read and modify.
+    constant PULSE_DURATION_CYCLES : integer := 150;
+
+    -- Internal signals
+    signal counter     : integer range 0 to PULSE_DURATION_CYCLES; -- Main counter for timing the pulse
+    signal is_pulsing  : std_logic; -- A flag that acts as our state ('1' when pulsing, '0' when idle)
+
+    -- Signals for the 2-stage input synchronizer to prevent metastability
+    signal sync_reg1   : std_logic;
+    signal sync_reg2   : std_logic;
+
+begin
+
+    --================================================================================
+    -- PROCESS 1: Input Synchronizer
+    -- This is critical. It safely brings the asynchronous input 'async_i' into
+    -- the clock domain of our system. It uses two flip-flops to minimize the
+    -- risk of a metastable event corrupting our logic.
+    --================================================================================
+    synchronizer_proc : process(clk, rst_n)
+    begin
+        if rst_n = '0' then
+            sync_reg1 <= '0';
+            sync_reg2 <= '0';
+        elsif (clk'event and clk = '1') then
+            sync_reg1 <= async_i;
+            sync_reg2 <= sync_reg1;
+        end if;
+    end process synchronizer_proc;
+
+
+    --================================================================================
+    -- PROCESS 2: Main Counter and Control Logic
+    -- This is the heart of the design. It decides when to start the pulse,
+    -- runs the counter, and decides when to stop the pulse.
+    --================================================================================
+    main_control_proc : process(clk, rst_n)
+    begin
+        if rst_n = '0' then
+            -- On reset, we are not pulsing and the counter is zeroed.
+            is_pulsing <= '0';
+            counter    <= 0;
+        elsif (clk'event and clk = '1') then
+            -- This logic runs on every rising clock edge.
+            if is_pulsing = '1' then
+                -- We are currently in the middle of generating the output pulse.
+                if counter = PULSE_DURATION_CYCLES - 1 then
+                    -- The counter has reached its final value (149).
+                    -- The pulse has lasted for 150 cycles (0 to 149).
+                    -- Stop pulsing and reset for the next trigger.
+                    is_pulsing <= '0';
+                    counter    <= 0;
+                else
+                    -- The pulse is not finished yet, so increment the counter.
+                    counter <= counter + 1;
+                end if;
+            else
+                -- We are idle, waiting for a trigger.
+                -- Check if the (now synchronized) input is high.
+                if sync_reg2 = '1' then
+                    -- Trigger detected! Start the pulse generation.
+                    is_pulsing <= '1';
+                    counter    <= 0; -- Start the counter from 0
+                end if;
+            end if;
+        end if;
+    end process main_control_proc;
+
+
+    --================================================================================
+    -- Concurrent Assignment for the Output
+    -- The output 'pulse_o' should be high whenever the 'is_pulsing' flag is
+    -- high. This is a simple combinational assignment.
+    --================================================================================
+    pulse_o <= is_pulsing;
+
+end architecture behavioral;

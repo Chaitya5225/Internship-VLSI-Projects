@@ -1,0 +1,10 @@
+Info: Using NativeLink to launch synthesis Tool
+Synthesis tool Design Compiler is not supported by NativeLink
+Error: NativeLink flow failed to complete synthesis
+
+================The following information is provided to Debug NativeLink Script=================
+Nativelink TCL script failed with errorCode:  POSIX ENOENT {no such file or directory}
+Nativelink TCL script failed with errorInfo:  couldn't open "C:/altera/13.0sp1/quartus/bin64/tclIndex": no such file or directory
+    while executing
+"open [file join $dir tclIndex]"
+PATH Environment Variable is set to :  c:\altera\13.0sp1\quartus\bin64\;c:\altera\13.0sp1\quartus\bin64\;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Python3.7\Scripts\;C:\Python3.7\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files (x86)\Microchip\MPLAB C32 Suite\bin;C:\Program Files (x86)\HI-TECH Software\PICC\9.83\bin;%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem;%SYSTEMROOT%\System32\WindowsPowerShell\v1.0\;%SYSTEMROOT%\System32\OpenSSH\;C:\Users\chait\AppData\Local\Programs\Python\Python311\Scripts\;C:\Users\chait\AppData\Local\Programs\Python\Python311\;C:\Users\chait\AppData\Local\Microsoft\WindowsApps;C:\Users\chait\MinGW\bin;C:\flutter\bin;C:\Users\chait\AppData\Local\Programs\cursor\resources\app\bin;C:\altera\13.0sp1\modelsim_ase\win32aloem

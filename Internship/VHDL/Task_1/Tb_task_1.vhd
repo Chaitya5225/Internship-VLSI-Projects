@@ -1,0 +1,57 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+
+ENTITY Tb_task_1 IS
+END Tb_task_1;
+
+ARCHITECTURE behavior OF Tb_task_1 IS
+
+    COMPONENT task_1
+        PORT(
+            clk       : IN  std_logic;
+            reset     : IN  std_logic;
+            wave_20ns : OUT std_logic;
+            wave_40ns : OUT std_logic;
+            wave_80ns : OUT std_logic
+        );
+    END COMPONENT;
+
+    signal clk       : std_logic := '0';
+    signal reset     : std_logic := '0';
+    signal wave_20ns : std_logic;
+    signal wave_40ns : std_logic;
+    signal wave_80ns : std_logic;
+
+    constant clk_period : time := 10 ns;
+
+BEGIN
+
+    -- Instantiate DUT
+    uut: task_1
+        PORT MAP (
+            clk       => clk,
+            reset     => reset,
+            wave_20ns => wave_20ns,
+            wave_40ns => wave_40ns,
+            wave_80ns => wave_80ns
+        );
+
+    -- Clock generation
+    clk_process : process
+    begin
+        clk <= '0';
+        wait for clk_period / 2;   -- ✅ use "wait for"
+        clk <= '1';
+        wait for clk_period / 2;   -- ✅ use "wait for"
+    end process;
+
+    -- Stimulus process
+    stim_proc: process
+    begin
+        reset <= '1';
+        wait for 100 ns;           -- ✅ use "wait for"
+        reset <= '0';
+        wait; -- stop process
+    end process;
+
+END behavior;
